@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -66,3 +67,69 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+=======
+.DS_Store
+
+# Exclude user-specific XCode 3 and 4 files
+
+*.mode1
+
+*.mode1v3
+
+*.mode2v3
+
+*.perspective
+
+*.perspectivev3
+
+*.pbxuser
+
+*.xcworkspace
+
+*.xcscheme
+
+*.xcuserdatad
+
+xcuserdata
+
+DerivedData/
+
+Pods
+
+Podfile.lock
+
+!default.pbxuser
+
+!default.mode1v3
+
+!default.mode2v3
+
+!default.perspectivev3
+
+# Exclude Phabricator files
+
+.arcconfig
+
+*.modulemap
+
+FMDBCode.framework
+
+build
+
+DailyBuild/
+
+AppStore/
+
+fastlane/
+
+*.h~*
+
+.idea
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+>>>>>>> d5e2f71 (feat 完成opencv库的导入和文档边缘识别)
