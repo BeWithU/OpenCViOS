@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OpenCV : NSObject
 
-+ (UIImage *)cannyWithImage:(UIImage *)srcImage;
-
+//检测图片，定位到四个顶点，然后做投影和矫正变换，返回变换后的图片
++ (UIImage *)detectWithImage:(UIImage *)srcImage;
 
 /// 计算给定图片中最大的突四边形，返回四边形的四个顶点，顺序为左上，右上，右下，左下
 /// @param srcImage 要计算的图片

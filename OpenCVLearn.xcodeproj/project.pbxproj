@@ -16,7 +16,6 @@
 		479D92A325EF658800E52D4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 479D92A225EF658800E52D4F /* Assets.xcassets */; };
 		479D92A625EF658800E52D4F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 479D92A425EF658800E52D4F /* LaunchScreen.storyboard */; };
 		479D92A925EF658800E52D4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 479D92A825EF658800E52D4F /* main.m */; };
-		479D92B225EF660900E52D4F /* doc.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 479D92B125EF660900E52D4F /* doc.jpg */; };
 		479D92BB25EF683000E52D4F /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 479D92BA25EF683000E52D4F /* OpenCV.mm */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +34,6 @@
 		479D92A525EF658800E52D4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		479D92A725EF658800E52D4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		479D92A825EF658800E52D4F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		479D92B125EF660900E52D4F /* doc.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = doc.jpg; sourceTree = "<group>"; };
 		479D92B925EF683000E52D4F /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
 		479D92BA25EF683000E52D4F /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,7 +83,6 @@
 				479D92A425EF658800E52D4F /* LaunchScreen.storyboard */,
 				479D92A725EF658800E52D4F /* Info.plist */,
 				479D92A825EF658800E52D4F /* main.m */,
-				479D92B125EF660900E52D4F /* doc.jpg */,
 				479D92B925EF683000E52D4F /* OpenCV.h */,
 				479D92BA25EF683000E52D4F /* OpenCV.mm */,
 			);
@@ -156,7 +153,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				479D92B225EF660900E52D4F /* doc.jpg in Resources */,
 				479D92A625EF658800E52D4F /* LaunchScreen.storyboard in Resources */,
 				479D92A325EF658800E52D4F /* Assets.xcassets in Resources */,
 				479D92A125EF658700E52D4F /* Main.storyboard in Resources */,
