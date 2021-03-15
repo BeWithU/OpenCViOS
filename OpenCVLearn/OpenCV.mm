@@ -38,8 +38,6 @@ using namespace std;
 
     //膨胀边缘
     dilate(cannyMat, cannyMat, Mat(), cv::Point(-1, -1));
-    //腐蚀边缘
-    erode(cannyMat, cannyMat, Mat(), cv::Point(-1, -1));
 
     //查找轮廓
     vector<vector<cv::Point>> contours;
@@ -157,8 +155,6 @@ using namespace std;
 
     //膨胀边缘
     dilate(cannyMat, cannyMat, Mat(), cv::Point(-1, -1));
-    //腐蚀边缘
-    erode(cannyMat, cannyMat, Mat(), cv::Point(-1, -1));
 
     //查找轮廓
     vector<vector<cv::Point>> contours;
