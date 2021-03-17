@@ -18,25 +18,23 @@
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
 
-    UIImage *docImg = [UIImage imageNamed:@"doc"];
+    UIImage *docImg = [UIImage imageNamed:@"tixing"];
 
     UIImageView *oriImageView = [[UIImageView alloc] initWithImage:docImg];
     [self.view addSubview:oriImageView];
     oriImageView.contentMode = UIViewContentModeScaleAspectFit;
-    oriImageView.frame = CGRectMake(0, 0, 300, 400);
 
-    __block NSArray<NSValue *> *points;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        points = [OpenCV verticesOfImage:docImg];
+        NSArray<NSValue *> *points = [OpenCV verticesOfImage:docImg];
+        UIImage *cannyImg = [OpenCV transformImage:docImg points:points];
         dispatch_async(dispatch_get_main_queue(), ^{
             [points enumerateObjectsUsingBlock:^(NSValue * _Nonnull obj,
                                                  NSUInteger idx,
                                                  BOOL * _Nonnull stop) {
                 CGPoint p = [obj CGPointValue];
                 //返回的是PT，所以这里要根据尺寸和UIImageView的大小算一个比例
-                //300，400是我随便写的，开发中要根据真实view来算
-                CGFloat x = p.x / docImg.size.width * 300;
-                CGFloat y = p.y / docImg.size.height * 400;
+                CGFloat x = p.x / docImg.size.width * oriImageView.frame.size.width;
+                CGFloat y = p.y / docImg.size.height * oriImageView.frame.size.height;
                 UIView *pv = [[UIView alloc] initWithFrame:CGRectMake(x, y, 5, 5)];
                 pv.backgroundColor = UIColor.redColor;
                 pv.layer.cornerRadius = 2.5;
@@ -48,14 +46,17 @@
                 lbl.text = [NSString stringWithFormat:@"%zd", idx+1];
                 [oriImageView addSubview:lbl];
             }];
+
+            UIImageView *cannyImageView = [[UIImageView alloc] initWithImage:cannyImg];
+            [self.view addSubview:cannyImageView];
+            cannyImageView.contentMode = UIViewContentModeScaleAspectFit;
+            CGRect frame = cannyImageView.frame;
+            frame.origin.y = 500;
+            cannyImageView.frame = frame;
         });
     });
 
-    UIImage *cannyImg = [OpenCV detectWithImage:docImg];
-    UIImageView *cannyImageView = [[UIImageView alloc] initWithImage:cannyImg];
-    [self.view addSubview:cannyImageView];
-    cannyImageView.contentMode = UIViewContentModeScaleAspectFit;
-    cannyImageView.frame = CGRectMake(0, 420, 300, 400);
+
 }
 
 
