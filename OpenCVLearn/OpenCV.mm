@@ -18,6 +18,8 @@ using namespace std;
 @implementation OpenCV
 
 //https://qjx.app/posts/opencv-notes/ 矩形边缘检测算法
+
+//检测图片，定位到四个顶点，然后做投影和矫正变换，返回变换后的图片
 + (UIImage *)detectWithImage:(UIImage *)srcImage {
     if (!srcImage) {
         return nil;
@@ -95,41 +97,22 @@ using namespace std;
         }
     }
 
-    //将cvPoint转为CGPoint形式的数组，要传出
+    //四边形投影
+    //找到原图和变换之后的四个点，顺序是左上，右上，左下，右下
+    vector<cv::Point> srcPoints = [self sortedPoints:rectPoints];
+    //将cvPoint转为CGPoint形式的数组
     NSMutableArray *cgPoints = [NSMutableArray arrayWithCapacity:4];
-    for(int i=0;i<rectPoints.size();++i) {
+    for(int i=0;i<srcPoints.size();++i) {
         //draw
 //        circle(srcMat, rectPoints[i], 10, Scalar(255,0,0), 5);
 //        line(srcMat, rectPoints[i], rectPoints[(i+1)%4], Scalar(0,0,225), 2);
 
-        CGPoint cgPoint = CGPointMake(rectPoints[i].x*1.0, rectPoints[i].y*1.0);
+        CGPoint cgPoint = CGPointMake(srcPoints[i].x*1.0, srcPoints[i].y*1.0);
         cgPoints[i] = [NSValue valueWithCGPoint:cgPoint];
     }
 
+    UIImage *resImg = [self transformImage:srcImage points:cgPoints];
 
-    //四边形投影
-    //找到原图和变换之后的四个点，顺序是左上，右上，左下，右下
-    vector<cv::Point> srcPoints = [self sortedPoints:rectPoints];
-    vector<cv::Point2f> srcPoints2f(srcPoints.size());
-    for(int i=0;i<srcPoints.size();++i) {
-        cv::Point p = srcPoints[i];
-        Point2f p2f(p.x * 1.0, p.y * 1.0);
-        srcPoints2f[i] = p2f;
-    }
-    //这里以图片的四个点为投影后的目标点 TODO 这种做法不是很准确，但是目前未找到更好的办法
-    CGFloat scale = srcImage.scale;
-    float w = srcImage.size.width * scale;
-    float h = srcImage.size.height * scale;
-    vector<cv::Point2f> dstPoints = {
-        cv::Point2f(0, 0),
-        cv::Point2f(w, 0),
-        cv::Point2f(w, h),
-        cv::Point2f(0, h)
-    };
-    Mat transMat = getPerspectiveTransform(srcPoints2f, dstPoints);
-    warpPerspective(srcMat, srcMat, transMat, srcMat.size());
-
-    UIImage *resImg = [self imageFromCVMat:srcMat];
     return resImg;
 }
 
@@ -239,10 +222,31 @@ using namespace std;
         CGPoint cgPoint = [value CGPointValue];
         srcPoints.push_back(cv::Point2f(cgPoint.x, cgPoint.y));
     }
-    //这里以图片的四个点为投影后的目标点 TODO banzhiqiang 这种做法不是很准确，但是目前未找到更好的办法
+
     CGFloat scale = srcImage.scale;
     float w = srcImage.size.width * scale;
     float h = srcImage.size.height * scale;
+
+    //策略1：如果左右两条边大致相等，目标矩形的宽高比等于左边比顶边。同理上下边。
+    //如果没有大致相等，则以原图片的宽高为最终图片宽高 TODO 想更好的策略
+    //四条边长度分别为top,bottom,left,right
+    float t = [self pointDistance:srcPoints[0] p2:srcPoints[1]];
+    float b = [self pointDistance:srcPoints[2] p2:srcPoints[3]];
+    float l = [self pointDistance:srcPoints[0] p2:srcPoints[2]];
+    float r = [self pointDistance:srcPoints[1] p2:srcPoints[3]];
+    float hw = h / w; //高宽比
+    if ([self roughlyEqual:l d2:r]) {
+        hw = min(t, b) * 2 / (l + r);
+    } else if ([self roughlyEqual:t d2:b]) {
+        hw = min(l, r) * 2 / (t + b);
+    }
+
+    if (hw <= 1.0) {
+        h = w * hw;
+    } else if (hw > 1.0) {
+        w = h / hw;
+    }
+
     vector<cv::Point2f> dstPoints = {
         cv::Point2f(0, 0),
         cv::Point2f(w, 0),
@@ -250,7 +254,7 @@ using namespace std;
         cv::Point2f(0, h)
     };
     Mat transMat = getPerspectiveTransform(srcPoints, dstPoints);
-    warpPerspective(srcMat, srcMat, transMat, srcMat.size());
+    warpPerspective(srcMat, srcMat, transMat, cv::Size(w,h));
 
     UIImage *resImg = [self imageFromCVMat:srcMat];
     return resImg;
@@ -419,4 +423,12 @@ using namespace std;
     return resPoints;
 }
 
++ (float)pointDistance:(cv::Point2f)p1 p2:(cv::Point2f)p2 {
+    return hypotf((p1.x-p2.x), (p1.y-p2.y));
+}
+
++ (BOOL)roughlyEqual:(float)d1 d2:(float)d2 {
+    float d = fabs(d1-d2);
+    return d / max(d1,d2) < 0.1; //长度相差10%则认为相等，10%是随便定的
+}
 @end
